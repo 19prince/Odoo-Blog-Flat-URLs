@@ -2,7 +2,15 @@
 
 > Clean blog URLs for Odoo websites: `/blog/<post>` instead of `/blog/blog-1/<post>`. By [19prince.com](https://www.19prince.com)
 
-Every Odoo website with a single blog puts an extra folder in every post URL, and answers `/blog` itself with a temporary redirect:
+Odoo is built for websites that run several blogs, so it files every post inside its blog's folder:
+
+```
+/blog/<blog>/<post>
+```
+
+The folder name is the blog's name plus its database ID. A blog named "Blog" with ID 1 gets the folder `blog-1`, so every post URL looks like `/blog/blog-1/my-post-27`.
+
+On a website with one blog, that folder does nothing useful, and Odoo answers `/blog` with a temporary redirect:
 
 ```
 /blog                       -> 302 -> /blog/blog-1
@@ -10,9 +18,9 @@ Every Odoo website with a single blog puts an extra folder in every post URL, an
 /blog/blog-1/feed           (the RSS feed)
 ```
 
-`blog-1` is the slug of the blog Odoo creates for you. It means nothing to readers or search engines, and the 302 tells Google that `/blog` is only temporarily somewhere else, so the blog index never firmly owns its authority. Odoo's own sitemap has listed the redirecting `/blog` URL too, which Search Console reports as "Page with redirect".
+The 302 tells Google that `/blog` has only moved temporarily, so the blog index never firmly owns its authority. Odoo's sitemap has listed the redirecting `/blog` too, which Search Console reports as "Page with redirect".
 
-This module removes the folder and the redirect:
+This module is for **single-blog websites**. It removes the folder and the redirect:
 
 ```
 /blog                       -> 200, the blog index renders in place
@@ -84,9 +92,21 @@ Odoo Online doesn't allow custom Python modules, so this can't be installed ther
 
 ---
 
+## Single blog vs. multiple blogs
+
+**Install this on websites with one blog.** The folder is how Odoo tells several blogs apart, and this module removes it:
+
+| | One blog | Several blogs |
+|---|---|---|
+| Post URLs | `/blog/my-post-27` | `/blog/my-post-27` (no way to tell which blog from the URL) |
+| Blog index | `/blog` | every blog's index (`/blog/news-2`, `/blog/updates-3`) 301s to one combined `/blog` |
+| RSS | `/blog/feed` | `/blog/feed` serves the first blog only; every other blog's feed 301s to it |
+| Verdict | Use it | Keep Odoo's default URLs |
+
+If you run several blogs, give each one a meaningful name so the folder reads `/blog/news-2` instead of `/blog/blog-1`.
+
 ## Limits
 
-- **Built for one blog per website.** If a website has several blogs, posts still get flat URLs and old URLs still redirect, but `/blog/feed` serves the first blog only, and `/blog` shows all blogs as core does.
 - **The trailing ID stays** (`my-post-27`). Dropping it means looking posts up by title, which breaks when a post is renamed or two posts share a title.
 - Uninstalling restores Odoo's default URLs. The flat URLs would then 404, so add redirects before you uninstall a site with traffic.
 
