@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Point post links straight at website_url so they skip the 301 hop -->
+    <template id="posts_loop" inherit_id="website_blog.posts_loop">
+        <xpath expr="//a[contains(@t-attf-href, 'slug(blog_post.blog_id)')]" position="attributes">
+            <attribute name="t-attf-href"/>
+            <attribute name="t-att-href">blog_post.website_url</attribute>
+        </xpath>
+    </template>
+    <template id="post_heading" inherit_id="website_blog.post_heading">
+        <xpath expr="//a[contains(@t-attf-href, 'slug(blog_post.blog_id)')]" position="attributes">
+            <attribute name="t-attf-href"/>
+            <attribute name="t-att-href">blog_post.website_url</attribute>
+        </xpath>
+    </template>
+    <template id="post_cover_image" inherit_id="website_blog.post_cover_image">
+        <xpath expr="//a[contains(@t-attf-href, 'slug(blog_post.blog_id)')]" position="attributes">
+            <attribute name="t-attf-href"/>
+            <attribute name="t-att-href">blog_post.website_url</attribute>
+        </xpath>
+    </template>
+    <template id="post_teaser" inherit_id="website_blog.post_teaser">
+        <xpath expr="//a[contains(@t-attf-href, 'slug(blog_post.blog_id)')]" position="attributes">
+            <attribute name="t-attf-href"/>
+            <attribute name="t-att-href">blog_post.website_url</attribute>
+        </xpath>
+    </template>
+    <template id="opt_blog_post_read_next" inherit_id="website_blog.opt_blog_post_read_next">
+        <!-- same xpath twice: the first edit removes the match, so the second hits the next link -->
+        <xpath expr="//a[contains(@t-att-href, 'slug(next_post.blog_id)')]" position="attributes">
+            <attribute name="t-att-href">next_post.website_url</attribute>
+        </xpath>
+        <xpath expr="//a[contains(@t-att-href, 'slug(next_post.blog_id)')]" position="attributes">
+            <attribute name="t-att-href">next_post.website_url</attribute>
+        </xpath>
+        <xpath expr="//*[contains(@t-att-data-url, 'slug(next_post.blog_id)')]" position="attributes">
+            <attribute name="t-att-data-url">next_post.website_url + '?anim'</attribute>
+        </xpath>
+    </template>
+    <template id="opt_blog_post_comment" inherit_id="website_blog.opt_blog_post_comment">
+        <xpath expr="//a[contains(@t-attf-href, 'slug(blog_post.blog_id)')]" position="attributes">
+            <attribute name="t-attf-href">/web/login?redirect={{blog_post.website_url}}#discussion</attribute>
+        </xpath>
+    </template>
+    <!-- RSS lives at /blog/feed -->
+    <template id="blog_post_short" inherit_id="website_blog.blog_post_short">
+        <xpath expr="//link[@type='application/atom+xml']" position="attributes">
+            <attribute name="t-att-href">'/blog/feed'</attribute>
+        </xpath>
+    </template>
+    <template id="opt_sidebar_blog_index_follow_us" inherit_id="website_blog.opt_sidebar_blog_index_follow_us">
+        <xpath expr="//a[contains(@t-att-href, '/feed')]" position="attributes">
+            <attribute name="t-att-href">'/blog/feed'</attribute>
+        </xpath>
+    </template>
+    <!-- Feed's site link was /blog/<id>, which would now resolve as a post. Atom <id> left as-is so readers keep the subscription. -->
+    <template id="blog_feed" inherit_id="website_blog.blog_feed">
+        <xpath expr="//feed/link" position="attributes">
+            <attribute name="t-att-href">'%s/blog' % base_url</attribute>
+        </xpath>
+    </template>
+</odoo>
