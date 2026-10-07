@@ -28,3 +28,10 @@ class TestFlatUrl(HttpCase):
         feed = self.url_open("/blog/%s/feed" % slug(blog), allow_redirects=False)
         self.assertEqual(feed.status_code, 301)
         self.assertTrue(feed.headers["Location"].endswith("/blog/feed"))
+
+        # Renamed blog: the old index slug still lands on /blog, not on a post
+        old_index = "/blog/%s" % slug(blog)
+        blog.name = "News"
+        renamed = self.url_open(old_index, allow_redirects=False)
+        self.assertEqual(renamed.status_code, 301)
+        self.assertTrue(renamed.headers["Location"].endswith("/blog"))

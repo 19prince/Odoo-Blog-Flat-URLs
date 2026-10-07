@@ -51,17 +51,22 @@ class WebsiteBlogFlat(WebsiteBlog):
         IrHttp = request.env["ir.http"]
         domain = request.website.website_domain()
 
+        blogs = request.env["blog.blog"].search(domain)
         # Old blog index URL, e.g. /blog/blog-1
-        if any(IrHttp._slug(b) == slug for b in request.env["blog.blog"].search(domain)):
+        if any(IrHttp._slug(b) == slug for b in blogs):
             return _redirect("/blog")
 
         record_id = IrHttp._unslug(slug)[1]
         # search() applies record rules: visitors can't reach unpublished posts
         blog_post = record_id and request.env["blog.post"].search(domain + [("id", "=", record_id)], limit=1)
-        if not blog_post:
+        if not (blog_post and IrHttp._slug(blog_post) == slug):
+            if record_id in blogs.ids:
+                # Index URL of a renamed blog (/blog/blog-1 after renaming to News).
+                # ponytail: a stale slug of the post sharing that ID lands on /blog too
+                return _redirect("/blog")
+            if blog_post:
+                return _redirect(blog_post.website_url)
             raise werkzeug.exceptions.NotFound()
-        if IrHttp._slug(blog_post) != slug:
-            return _redirect(blog_post.website_url)
 
         response = super().blog_post(blog_post.blog_id, blog_post, tag_id=tag_id, page=page,
                                      enable_editor=enable_editor, **post)

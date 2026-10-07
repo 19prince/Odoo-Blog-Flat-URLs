@@ -1,6 +1,6 @@
 {
     "name": "Website Blog Flat URLs",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "summary": "Serve blog posts at /blog/<post> instead of /blog/<blog>/<post>, with 301s from the old URLs",
     "category": "Website/Website",
     "author": "19 Prince",
