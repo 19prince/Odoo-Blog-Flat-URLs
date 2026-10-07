@@ -104,4 +104,4 @@ Covers the 200s on `/blog`, the flat post URL and `/blog/feed`, and the 301s fro
 
 ## About 19 Prince
 
-[19 Prince](https://www.19prince.com) helps mid-market companies replace disconnected systems with Odoo. More free modules: [19prince.com/resources](https://www.19prince.com/resources).
+[19 Prince](https://www.19prince.com) helps businesses on Odoo drive more demand with the tool they already own. More free modules: [19prince.com/resources](https://www.19prince.com/resources).
